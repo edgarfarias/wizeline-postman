@@ -1,0 +1,1089 @@
+{
+	"info": {
+		"_postman_id": "0a01ab4a-b6a2-4b18-bfd5-7a4cd85b5675",
+		"name": "Todoist",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "TASKS",
+			"item": [
+				{
+					"name": "Create task",
+					"item": [
+						{
+							"name": "Positive",
+							"item": [
+								{
+									"name": "Create new task",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const jsonData = pm.response.json();",
+													"pm.environment.set(\"taskId\", jsonData.id);",
+													"",
+													"const schema = {",
+													"    \"type\": \"object\",",
+													"    \"properties\": {",
+													"        \"id\": { \"type\": \"number\" },",
+													"        \"assigner\": { \"type\": \"number\" },",
+													"        \"project_id\": { \"type\": \"number\" },",
+													"        \"section_id\": { \"type\": \"number\" },",
+													"        \"order\": { \"type\": \"number\" },",
+													"        \"content\": { \"type\": \"string\" },",
+													"        \"completed\": { \"type\": \"boolean\" },",
+													"        \"label_ids\": { \"type\": \"array\" },",
+													"        \"priority\": { \"type\": \"number\" },",
+													"        \"comment_count\": { \"type\": \"number\" },",
+													"        \"creator\": { \"type\": \"number\" },",
+													"        \"created\": { \"type\": \"string\" },",
+													"        \"url\": { \"type\": \"string\" },",
+													"    }",
+													"}",
+													"",
+													"pm.test(\"Response has right schema\", () => {",
+													"    pm.response.to.have.jsonSchema(schema);",
+													"});",
+													"",
+													"const content = pm.environment.get(\"taskContent\");",
+													"pm.test(\"Response has right content\", () => {",
+													"    pm.expect(jsonData.content).to.eql(content);",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"Buy milk\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Negative",
+							"item": [
+								{
+									"name": "Create task - Invalid content type (Negative)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"    pm.test(\"Status code is 400\", () => {",
+													"        pm.expect(pm.response.code).to.be.equal(400);",
+													"    });"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": 0\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create task - No content (Negative)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"    pm.test(\"Status code is 400\", () => {",
+													"        pm.expect(pm.response.code).to.be.equal(400);",
+													"    });"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create task - Missing mandatory fields (Negative)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"    pm.test(\"Status code is 400\", () => {",
+													"        pm.expect(pm.response.code).to.be.equal(400);",
+													"    });"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"project_id\": 1\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create task - Invalid token (Negative)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"    pm.test(\"Status code is 403\", () => {",
+													"        pm.expect(pm.response.code).to.be.equal(403);",
+													"    });"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "0000",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"Forbidden task\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Get active task",
+					"item": [
+						{
+							"name": "Positive",
+							"item": [
+								{
+									"name": "Get task",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const jsonData = pm.response.json();",
+													"",
+													"const schema = {",
+													"    \"type\": \"object\",",
+													"    \"properties\": {",
+													"        \"id\": { \"type\": \"number\" },",
+													"        \"assigner\": { \"type\": \"number\" },",
+													"        \"project_id\": { \"type\": \"number\" },",
+													"        \"section_id\": { \"type\": \"number\" },",
+													"        \"order\": { \"type\": \"number\" },",
+													"        \"content\": { \"type\": \"string\" },",
+													"        \"completed\": { \"type\": \"boolean\" },",
+													"        \"label_ids\": { \"type\": \"array\" },",
+													"        \"priority\": { \"type\": \"number\" },",
+													"        \"comment_count\": { \"type\": \"number\" },",
+													"        \"creator\": { \"type\": \"number\" },",
+													"        \"created\": { \"type\": \"string\" },",
+													"        \"url\": { \"type\": \"string\" },",
+													"    }",
+													"}",
+													"pm.test(\"Response has right schema\", () => {",
+													"    pm.response.to.have.jsonSchema(schema);",
+													"});",
+													"",
+													"const content = pm.environment.get(\"taskContent\");",
+													"const id = pm.environment.get(\"taskId\");",
+													"pm.test(\"Response has rigth content and id\", () => {",
+													"    pm.expect(jsonData.id).to.eql(id);",
+													"    pm.expect(jsonData.content).to.eql(content);",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/{{taskId}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"{{taskId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get all tasks",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const jsonData = pm.response.json();",
+													"",
+													"const schema = {",
+													"    \"type\": \"array\",",
+													"    \"items\": {",
+													"        \"type\": \"object\",",
+													"        \"properties\": {",
+													"            \"id\": { \"type\": \"number\" },",
+													"            \"assigner\": { \"type\": \"number\" },",
+													"            \"project_id\": { \"type\": \"number\" },",
+													"            \"section_id\": { \"type\": \"number\" },",
+													"            \"order\": { \"type\": \"number\" },",
+													"            \"content\": { \"type\": \"string\" },",
+													"            \"completed\": { \"type\": \"boolean\" },",
+													"            \"label_ids\": { \"type\": \"array\" },",
+													"            \"priority\": { \"type\": \"number\" },",
+													"            \"comment_count\": { \"type\": \"number\" },",
+													"            \"creator\": { \"type\": \"number\" },",
+													"            \"created\": { \"type\": \"string\" },",
+													"            \"url\": { \"type\": \"string\" },",
+													"        }",
+													"    }",
+													"}",
+													"",
+													"pm.test(\"Response has right schema\", () => {",
+													"    pm.response.to.have.jsonSchema(schema);",
+													"});",
+													"",
+													"const content = pm.environment.get(\"taskContent\");",
+													"const taskId = pm.environment.get(\"taskId\");",
+													"pm.test(\"Response has rigth content and id\", () => {",
+													"    const task = jsonData.find(({id}) => id === taskId);",
+													"    pm.expect(task).to.exist;",
+													"    pm.expect(task.content).to.eql(content);",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Negative",
+							"item": [
+								{
+									"name": "Get task - non existing task (Negative)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"    pm.test(\"Status code is 404\", () => {",
+													"        pm.expect(pm.response.code).to.be.equal(404);",
+													"    });"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/invalid",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"invalid"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get task - Invalid token (Negative)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"    pm.test(\"Status code is 403\", () => {",
+													"        pm.expect(pm.response.code).to.be.equal(403);",
+													"    });"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "0000",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/{{taskId}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"{{taskId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Update task",
+					"item": [
+						{
+							"name": "Positive",
+							"item": [
+								{
+									"name": "Reopen task",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Response has rigth content and id\", () => {",
+													"    pm.response.to.have.status('No Content');",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/{{taskId}}/reopen",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"{{taskId}}",
+												"reopen"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update task content",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Response has rigth content and id\", () => {",
+													"    pm.response.to.have.status('No Content');",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"{{taskContentChanged}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/{{taskId}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"{{taskId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Close task",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Response has rigth content and id\", () => {",
+													"    pm.response.to.have.status('No Content');",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/{{taskId}}/close",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"{{taskId}}",
+												"close"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Negative",
+							"item": [
+								{
+									"name": "Update task content - Invalid task id (Negative)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"    pm.test(\"Status code is 404\", () => {",
+													"        pm.expect(pm.response.code).to.be.equal(404);",
+													"    });"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"{{taskContentChanged}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/invalid",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"invalid"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update task content - Invalid content type (Negative)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"    pm.test(\"Status code is 400\", () => {",
+													"        pm.expect(pm.response.code).to.be.equal(400);",
+													"    });"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": 1\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/{{taskId}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"{{taskId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update task content - Invalid content type (Negative) Copy",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"    pm.test(\"Status code is 403\", () => {",
+													"        pm.expect(pm.response.code).to.be.equal(403);",
+													"    });"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "0000",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"content\": \"forbidden task\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/{{taskId}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"{{taskId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Close task - Invalid task id (Negative)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", () => {",
+													"    pm.expect(pm.response.code).to.be.equal(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/invalid/close",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"invalid",
+												"close"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Close task - Invalid token (Negative)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 403\", () => {",
+													"    pm.expect(pm.response.code).to.be.equal(403);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "0000",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/{{taskId}}/close",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"{{taskId}}",
+												"close"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Reopen task - Invalid task id (Negative)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", () => {",
+													"    pm.expect(pm.response.code).to.be.equal(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/invalid/reopen",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"invalid",
+												"reopen"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Reopen task - Invalid task id (Negative) Copy",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 403\", () => {",
+													"    pm.expect(pm.response.code).to.be.equal(403);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "0",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/{{taskId}}/reopen",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"{{taskId}}",
+												"reopen"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Delete task",
+					"item": [
+						{
+							"name": "Positive",
+							"item": [
+								{
+									"name": "Delete task",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Response has rigth content and id\", () => {",
+													"    pm.response.to.have.status('No Content');",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/{{taskId}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"{{taskId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Negative",
+							"item": [
+								{
+									"name": "Delete task - invalid task id (Negative)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", () => {",
+													"    pm.expect(pm.response.code).to.be.equal(404);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/invalid",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"invalid"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete task - invalid task id (Negative) Copy",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 403\", () => {",
+													"    pm.expect(pm.response.code).to.be.equal(403);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "0",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/{{tasksEndpoint}}/{{taskId}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"{{tasksEndpoint}}",
+												"{{taskId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const resTime = pm.environment.get(\"responseTime\");",
+							"pm.test(\"Response time is within expected range\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(Number(resTime));",
+							"});"
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"if(!pm.info.requestName.includes('Negative')) {",
+					"    pm.test(\"Status code is 2xx\", () => {",
+					"        console.log();",
+					"        pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+					"    });",
+					"}",
+					""
+				]
+			}
+		}
+	]
+}

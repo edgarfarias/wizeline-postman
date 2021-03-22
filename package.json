@@ -1,0 +1,17 @@
+{
+  "name": "wizeline-postman",
+  "version": "1.0.0",
+  "description": "Wizeline backend automation challenge",
+  "main": "index.js",
+  "scripts": {
+    "test-tasks": "newman run Todoist/tests/Todoist.postman_collection.json -e Todoist/env/TodoistEnv.postman_environment.json -r htmlextra --reporter-htmlextra-export Todoist/reports/",
+    "test-tasks-pipeline": "newman run Todoist/tests/Todoist.postman_collection.json -e Todoist/env/TodoistEnv.postman_environment_safe.json -r htmlextra --reporter-htmlextra-export Todoist/reports/"
+  },
+  "author": "Edgar Farias",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "newman": "^5.2.2",
+    "newman-reporter-htmlextra": "^1.20.1"
+  }
+}
